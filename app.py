@@ -2,20 +2,16 @@ from traceback import print_tb
 from turtle import back, bgcolor
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (accuracy_score, classification_report,
-                             confusion_matrix, f1_score, precision_score,
-                             recall_score)
+from sklearn.metrics import (accuracy_score, confusion_matrix, f1_score,
+                             precision_score, recall_score)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 dt = pd.read_csv("./diabetes.csv")
 
-# has any value zero in the columns
-print((dt[['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']] == 0).sum())
 
 print(dt.head(2))
 print(dt.info())
@@ -72,6 +68,9 @@ plt.title('Correlation Matrix (Pearson method)', fontsize=16)  # Fixed title
 plt.show()
 
 
+# has any value zero in the columns
+print((dt[['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']] == 0).sum())
+
 # Replace zeros with median values in relevant columns
 for col in columns:
     dt[col] = dt[col].replace(0, dt[col].median())
@@ -90,7 +89,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=42, stratify=y)
 
 # Logistic Regression
-log_reg = LogisticRegression(max_iter=1000, random_state=42)
+log_reg = LogisticRegression(max_iter=500, random_state=42)
 log_reg.fit(X_train, y_train)
 y_pred = log_reg.predict(X_test)
 
