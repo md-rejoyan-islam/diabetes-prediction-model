@@ -1,3 +1,4 @@
+from traceback import print_tb
 from turtle import back, bgcolor
 
 import matplotlib.pyplot as plt
@@ -12,6 +13,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 dt = pd.read_csv("./diabetes.csv")
+
+# has any value zero in the columns
+print((dt[['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']] == 0).sum())
 
 print(dt.head(2))
 print(dt.info())
@@ -68,6 +72,11 @@ plt.title('Correlation Matrix (Pearson method)', fontsize=16)  # Fixed title
 plt.show()
 
 
+# Replace zeros with median values in relevant columns
+for col in columns:
+    dt[col] = dt[col].replace(0, dt[col].median())
+
+
 # modeling
 
 X = dt.drop(['Outcome'], axis=1)
@@ -82,10 +91,19 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # Logistic Regression
 log_reg = LogisticRegression(max_iter=1000, random_state=42)
-# X_train = scaler.fit_transform(X_train)
-# X_test = scaler.transform(X_test)
 log_reg.fit(X_train, y_train)
 y_pred = log_reg.predict(X_test)
+
+
+cm = confusion_matrix(y_test, y_pred)
+
+# Display confusion matrix
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=[
+            "No Diabetes", "Diabetes"], yticklabels=["No Diabetes", "Diabetes"])
+plt.xlabel("Predicted")
+plt.ylabel("True")
+plt.title("Confusion Matrix")
+plt.show()
 
 # Evaluation
 accuracy = accuracy_score(y_test, y_pred)
