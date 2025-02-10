@@ -1,6 +1,3 @@
-from traceback import print_tb
-from turtle import back, bgcolor
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
